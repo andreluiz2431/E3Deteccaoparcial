@@ -1,0 +1,104 @@
+***********************************************************************************************
+
+                                    Trabalho: E1. Enquadramento parcial
+                                    -----------------------------------
+
+                            Alunos: Paulo Sergio Leal e André Luiz Montanha
+
+-----------------------------------------------------------------------------------------------
+
+- Arquivo clientUDP.py:
+
+    ¬ Como executar:
+        REQUISITOS:
+            - Possuir python3 instalado na máquina
+            - Possuir arquivos desenvolvidos na máquina
+            - Estar com servidor ligado para teste do cliente 
+            (transmissor)
+
+        1) Abrir terminal (Ctrl + Alt + T)
+
+        2) Direcionar-se ao diretório em que está o projeto (em ar-
+        quivos nos quais estão sendo trabalhadops)
+
+        3) Executar seguinte estrutura de comando no terminal: 
+            Estrutura:
+                python3 <nomeArquivo.py> <entradaDadosArquivo> <tamanho
+                Quadros> <ip> <porta>
+
+            Exemplo: 
+                python3 clientUDP.py enviar.txt 7 127.0.0.1 12000
+            
+        4}) A aplicação informará se os dados foram enviados e fina-
+        lizará a aplicação
+
+        # A aplicação possui uma função de ajuda durante sua execução,
+        então é possível ver o comando para sua execução e sua estrutura
+        com o seguinte comando:
+            Estrutura:
+                python3 <nomeArquivo.py> -h
+                    ou
+                python3 <nomeArquivo.py> --help
+
+            Exemplo:
+                python3 clientUDP.py -h
+
+    ¬ Sobre:
+        Algoritimo para transmissão de um conjunto de dados com
+        enquadramento dos mesmos por via socket UDP, utilizando python
+
+    ¬ Funcionamento:
+        Como documentado no arquivo, o programa faz a conexão e envio de dados
+        através do socket UDP e recebe os parêmetros para sua configuração através
+        da biblioteca SYS. A aplicação realiza as verificações básicas necessárias e 
+        realiza o enquadramento para envio dos mesmos. Após seu envio por quadro
+        ele envia confirmação de recebimento.
+
+-----------------------------------------------------------------------------------------------
+
+- Arquivo serverUDP.py:
+
+    ¬ Como executar:
+        REQUISITOS:
+            - Possuir python3 instalado na máquina
+            - Possuir arquivos desenvolvidos na máquina
+
+        1) Abrir terminal (Ctrl + Alt + T)
+
+        2) Direcionar-se ao diretório em que está o projeto (em ar-
+        quivos nos quais estão sendo trabalhadops)
+
+        3) Executar seguinte estrutura de comando no terminal: 
+            Estrutura:
+                python3 <nomeArquivo.py> <porta> <nomeArquivoSaida>
+
+            Exemplo:
+                python3 serverUDP.py 12000 saida.txt
+
+        4) A aplicação informará se o servidor teve sucesso na cone-
+        xão e se os dados foram recebidos. Logo escreverá no arquivo
+        de saída.
+
+        # A aplicação possui uma função de ajuda durante sua execução,
+        então é possível ver o comando para sua execução e sua estrutura
+        com o seguinte comando:
+            Estrutura:
+                python3 <nomeArquivo.py> -h
+                    ou
+                python3 <nomeArquivo.py> --help
+
+            Exemplo:
+                python3 serverUDP.py -h
+
+    ¬ Sobre:
+        Algoritimo para receber de um conjunto de dados com
+        enquadramento dos mesmos por via socket UDP, utilizando python
+
+    ¬ Funcionamento:
+       A aplicação realiza a conexão e prapara para recebimento dos dados
+        através do socket UDP e recebe os parêmetros para sua configuração
+        através da biblioteca SYS. Depois recebe os dados utilizando o socket
+        e confirma recepção. Logo em seguida para finalizar ele escreve no
+        arquivo de saída.
+
+***********************************************************************************************
