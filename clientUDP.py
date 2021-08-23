@@ -50,7 +50,7 @@ if(len(sys.argv) > 1):
                 h.update(str(seq_int).encode())
                 cod = h.hexdigest() # Transforma o codiog em hash
 
-                envio  = str(seq_int) + ' ' + cod + ' ' + "{}".format(message.decode('utf-8'))  
+                envio  = str(seq_int) + ' ' + cod + ' ' + "{}".format(message)  
 
 
                 if(socketClient.sendto(envio.encode(),(host_andress))) : # Envia a o frame jundo com o numero sequecial e o codigo para o receptor
@@ -86,7 +86,7 @@ if(len(sys.argv) > 1):
 
                 #socketClient.sendto(message, (serverName, serverPort)) # enviando mensagem para o servidor
           
-              seq_int +=1 #Incrementa o numero da sequencia
+                seq_int +=1 #Incrementa o numero da sequencia
 
         message = str.encode("@!@") # definindo mensagem de confirmação de dados enviados
         

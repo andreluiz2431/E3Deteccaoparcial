@@ -41,7 +41,7 @@ while True : # loop infinito
            
             file_open.write(cargaUtil) # Escreve a mensagem contida no frame no arquivo de saída
             server.sendto(str.encode('ACK'),clientAddress)#envia para o transmissor que tudo foi verificado e está OK          
-            
+              
         else: 
            
             #error = num_seq +' '+ 'NACK'  
