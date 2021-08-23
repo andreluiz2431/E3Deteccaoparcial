@@ -1,12 +1,7 @@
 import socket # importando socket
 import sys # importando sys para receber por parametros
-import hashlib
+import hashlib # importando hashlib
 import time
-
-seq_int = 1
-
-
-#from  time import sleep # importar bib para tempo de espera
 
 params = sys.argv[1:] # definindo variável igual aos parâmetros
 
@@ -33,64 +28,51 @@ if(len(sys.argv) > 1):
         
         serverPort = int(params[3]) # definindo variável para o parâmetro da porta
 
-        host_andress = (serverName, serverPort) # Armazena o host e a porta em uma variavel 
+        hostAndress = (serverName, serverPort) # definindo endereço completo 
 
-        h = hashlib.md5()
-        socketClient.settimeout(1) 
+        hash = hashlib.md5() # encriptando
+
+        nSeq = 1
 
         for linha in arqSend:
             i = 0
             while(i < len(linha) - 1):
 
-
                 message = linha[i:(i+tamQuadros)] # particionando mensagerm para envio
+                socketClient.settimeout(1) # atraso
+
+                hash.update(str(nSeq).encode())
+                hashcod = hash.hexdigest() # Transforma o codigo em hash
+
+                msgSend  = str(nSeq) + ' ' + hashcod + ' ' + "{}".format(message)  # Junta o numero do frame com o sequencial e a mensagem
 
 
-
-                h.update(str(seq_int).encode())
-                cod = h.hexdigest() # Transforma o codiog em hash
-
-                envio  = str(seq_int) + ' ' + cod + ' ' + "{}".format(message)  
-
-
-                if(socketClient.sendto(envio.encode(),(host_andress))) : # Envia a o frame jundo com o numero sequecial e o codigo para o receptor
+                if(socketClient.sendto(msgSend.encode(),(hostAndress))) : # faz o envio do conjunto
           
                     try :
                 
-                        request, clientAddress = socketClient.recvfrom(1024) # Recebe confirmação de envio
+                        request, clientAddress = socketClient.recvfrom(1024) # confirmação de envio
                       
                         if(request == b'ACK') :
-                            print(request.decode('utf-8')) # Printa ACK
-                            print("Frame Gravado")
+                            print(request.decode('utf-8')) # ACK
+                            print("Frame salvo!")
                                         
                         elif(request == b'NACK') :
-                            print(request.decode('utf-8')) # Printa NACK
-                            print("Recording error | Frame  < "+str(seq_int)+" >") # Printa em qual frame deu erro
+                            print(request.decode('utf-8')) # NACK
+                            print("Falha no frame: "+str(nSeq)) # frame deu erro
                         
                     except:
-                        print("ERRO Timeout - CLOSE") # Printa se excedeu o tempo e fecha e para de enviar os frames
+                        print("Err: Timeout") # excedeu o tempo e fecha e para de enviar os frames
                         break 
                 
-                #----------- Cod de espera -----------
-                #for contagem in range(0,2): # repetição de 2X para a suspenção
-                #    print("Aguarde...")
-                #    sleep(1) # função para suspender cod por determinado tempo
-
-                #print('Olá!')
-                #-------------------------------------
-
-                
                 print("Pacote enviado: ", message)
-                #message = str.encode(message) # definindo mensagem para envio
-                i = (i + tamQuadros)
-
-                #socketClient.sendto(message, (serverName, serverPort)) # enviando mensagem para o servidor
+                i = (i + tamQuadros) # pula pelo tamnho do quadro | prox. quadro
           
-                seq_int +=1 #Incrementa o numero da sequencia
+                nSeq += 1 # vai pra a prox. sequencia
 
         message = str.encode("@!@") # definindo mensagem de confirmação de dados enviados
         
-        socketClient.sendto(message, (serverName, serverPort)) # enviando mensagem de confirmação para o servidor
+        socketClient.sendto(message, hostAndress) # enviando mensagem de confirmação para o servidor
 
         print("\nAplicação finalizada.")
         arqSend.close() # fechando arquivo
