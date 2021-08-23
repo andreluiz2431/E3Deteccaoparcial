@@ -1,7 +1,12 @@
 import socket # importando socket
 import sys # importando sys para receber por parametros
+import hashlib
+import time
 
-from  time import sleep # importar bib para tempo de espera
+seq_int = 1
+
+
+#from  time import sleep # importar bib para tempo de espera
 
 params = sys.argv[1:] # definindo variável igual aos parâmetros
 
@@ -28,25 +33,60 @@ if(len(sys.argv) > 1):
         
         serverPort = int(params[3]) # definindo variável para o parâmetro da porta
 
+        host_andress = (serverName, serverPort) # Armazena o host e a porta em uma variavel 
+
+        h = hashlib.md5()
+        socketClient.settimeout(1) 
+
         for linha in arqSend:
             i = 0
             while(i < len(linha) - 1):
+
+
                 message = linha[i:(i+tamQuadros)] # particionando mensagerm para envio
+
+
+
+                h.update(str(seq_int).encode())
+                cod = h.hexdigest() # Transforma o codiog em hash
+
+                envio  = str(seq_int) + ' ' + cod + ' ' + "{}".format(message.decode('utf-8'))  
+
+
+                if(socketClient.sendto(envio.encode(),(host_andress))) : # Envia a o frame jundo com o numero sequecial e o codigo para o receptor
+          
+                    try :
+                
+                        request, clientAddress = socketClient.recvfrom(1024) # Recebe confirmação de envio
+                      
+                        if(request == b'ACK') :
+                            print(request.decode('utf-8')) # Printa ACK
+                            print("Frame Gravado")
+                                        
+                        elif(request == b'NACK') :
+                            print(request.decode('utf-8')) # Printa NACK
+                            print("Recording error | Frame  < "+str(seq_int)+" >") # Printa em qual frame deu erro
+                        
+                    except:
+                        print("ERRO Timeout - CLOSE") # Printa se excedeu o tempo e fecha e para de enviar os frames
+                        break 
                 
                 #----------- Cod de espera -----------
-                for contagem in range(0,2): # repetição de 2X para a suspenção
-                    print("Aguarde...")
-                    sleep(1) # função para suspender cod por determinado tempo
+                #for contagem in range(0,2): # repetição de 2X para a suspenção
+                #    print("Aguarde...")
+                #    sleep(1) # função para suspender cod por determinado tempo
 
-                print('Olá!')
+                #print('Olá!')
                 #-------------------------------------
 
                 
                 print("Pacote enviado: ", message)
-                message = str.encode(message) # definindo mensagem para envio
+                #message = str.encode(message) # definindo mensagem para envio
                 i = (i + tamQuadros)
 
-                socketClient.sendto(message, (serverName, serverPort)) # enviando mensagem para o servidor
+                #socketClient.sendto(message, (serverName, serverPort)) # enviando mensagem para o servidor
+          
+              seq_int +=1 #Incrementa o numero da sequencia
 
         message = str.encode("@!@") # definindo mensagem de confirmação de dados enviados
         
